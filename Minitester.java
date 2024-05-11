@@ -1,4 +1,5 @@
 package assignment2;
+
 import assignment2.food.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -111,12 +112,12 @@ class Part1Test {
 
         list.clear();
 
-        Iterator i = list.iterator() ;
+        Iterator i = list.iterator();
         assertEquals(0, list.getSize());
         assertFalse(i.hasNext());
     }
 
-    
+
     // ==================== MYSTACK TEST =================== //
     @Test
     @Tag("score:1")
@@ -164,17 +165,17 @@ class Part1Test {
 }
 
 class Tester {
-    
-	private Caterpillar caterpillar;
+
+    private Caterpillar caterpillar;
     private Position initialPosition;
     private Color initialColor;
-    private int goalLength; 
+    private int goalLength;
 
     @Test
     @Tag("score:1")
     @DisplayName("Caterpillar: testConstructorAndFeedingStage")
     void testConstructorAndFeedingStage() {
-        setUp(); 
+        setUp();
         assertEquals(new Position(1, 1), caterpillar.getHeadPosition(), "Caterpillar should start at the given position");
         assertEquals(GameColors.GREEN, caterpillar.getSegmentColor(new Position(1, 1)), "Head segment should be green");
         assertEquals(goalLength, caterpillar.goal, "Goal should match");
@@ -184,59 +185,59 @@ class Tester {
 
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testGetSegmentColorAtHead")    
+    @DisplayName("Caterpillar: testGetSegmentColorAtHead")
     void testGetSegmentColorAtHead() {
         assertEquals(GameColors.GREEN, caterpillar.getSegmentColor(new Position(1, 1)), "Should get the color of the head segment");
     }
 
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testGetSegmentColorNoSegment")    
+    @DisplayName("Caterpillar: testGetSegmentColorNoSegment")
     void testGetSegmentColorNoSegment() {
         assertNull(caterpillar.getSegmentColor(new Position(2, 2)), "Should return null for no segment at position");
     }
 
     @Test
     @Tag("score:3")
-    @DisplayName("Caterpillar: testEatFruit")    
+    @DisplayName("Caterpillar: testEatFruit")
     void testEatFruit() {
         caterpillar.move(new Position(1, 2));
         Fruit fruit = new Fruit(GameColors.RED);
         caterpillar.eat(fruit);
-        
+
         assertEquals(GameColors.RED, caterpillar.getSegmentColor(new Position(1, 1)), "The color of the new segment should match the fruit");
     }
-    
+
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testEatPickleRetract")    
+    @DisplayName("Caterpillar: testEatPickleRetract")
     public void testEatPickleRetract() {
         Pickle pickle = new Pickle();
-        
-        caterpillar.move(new Position(2, 1)); 
+
+        caterpillar.move(new Position(2, 1));
         caterpillar.eat(new Fruit(GameColors.RED));
         caterpillar.move(new Position(3, 1));
         caterpillar.eat(pickle);
-        
+
         assertEquals(new Position(2, 1), caterpillar.getHeadPosition(), "Caterpillar head is not at the given position");
-        
+
     }
 
     @Test
     @Tag("score:3")
-    @DisplayName("Caterpillar: testEatPickleWithOneSegment")    
+    @DisplayName("Caterpillar: testEatPickleWithOneSegment")
     void testEatPickleWithOneSegment() {
         caterpillar.move(new Position(1, 2));
         Pickle pickle = new Pickle();
         caterpillar.eat(pickle);
         assertEquals(1, caterpillar.getSize(), "Caterpillar should not retract when it has only one segment");
     }
-   
+
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testEatLollipopWithOneSegment")    
+    @DisplayName("Caterpillar: testEatLollipopWithOneSegment")
     public void testEatLollipopWithOneSegment() {
-        
+
         // Save the initial state
         Color headColorBefore = caterpillar.getSegmentColor(initialPosition);
 
@@ -253,10 +254,10 @@ class Tester {
 
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testEatIceCreamAndReverse")    
+    @DisplayName("Caterpillar: testEatIceCreamAndReverse")
     void testEatIceCreamAndReverse() {
         caterpillar.move(new Position(1, 2));
-        caterpillar.eat(new Fruit(Color.RED)); 
+        caterpillar.eat(new Fruit(Color.RED));
         caterpillar.move(new Position(1, 3));
         caterpillar.eat(new IceCream());
         Position headPosition = caterpillar.getHeadPosition();
@@ -267,8 +268,7 @@ class Tester {
     // Eat Swiss cheese and verify every other segment is removed, and there is no gap in between.
     @Test
     @Tag("score:3")
-    @DisplayName("Caterpillar: testSwissCheese")    
-  
+    @DisplayName("Caterpillar: testSwissCheese")
     void testSwissCheese() {
         Position p2 = new Position(1, 2);
         caterpillar.move(p2);
@@ -288,46 +288,43 @@ class Tester {
         assertEquals(GameColors.YELLOW, caterpillar.getSegmentColor(p3), "tail segment should be at x=1, y=3 and be yellow");
         assertEquals(null, caterpillar.getSegmentColor(p2), "there should be no segment at x=1, y=2");
         assertEquals(null, caterpillar.getSegmentColor(initialPosition), "there should be no segment at x=1, y=1");
-    }    
-    
+    }
+
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testEatCakeWithSufficientEnergy")    
-  
+    @DisplayName("Caterpillar: testEatCakeWithSufficientEnergy")
+
     public void testEatCakeWithSufficientEnergy() {
 
         caterpillar.move(new Position(1, 2));
         caterpillar.move(new Position(1, 3));
         caterpillar.move(new Position(1, 4));
 
-        
-        Cake cake = new Cake(1); 
+
+        Cake cake = new Cake(1);
         caterpillar.eat(cake);
 
-        
-        int expectedLength = 2; 
+
+        int expectedLength = 2;
         assertEquals(expectedLength, caterpillar.getSize(), "Caterpillar should have grown by one segment after eating cake");
 
     }
 
 
-
-
     @Test
     @Tag("score:3")
-    @DisplayName("Caterpillar: testMoveAndGrow")    
+    @DisplayName("Caterpillar: testMoveAndGrow")
     void testMoveAndGrow() {
         caterpillar.move(new Position(1, 2)); // Caterpillar moves to a new position
         assertEquals(new Position(1, 2), caterpillar.getHeadPosition(), "Caterpillar head should be at the new position after moving");
     }
-   
 
 
     // When eating cake, verify that the colors of the newly added segments are random
     // and vary across different calls.
     @Test
     @Tag("score:2")
-    @DisplayName("Caterpillar: testEatCakeSegmentColors")    
+    @DisplayName("Caterpillar: testEatCakeSegmentColors")
     void testEatCakeSegmentColors() {
         Position p2 = new Position(1, 2);
         caterpillar.move(p2);
@@ -348,9 +345,9 @@ class Tester {
 
     @BeforeEach
     public void setUp() {
-        initialPosition = new Position(1,1); 
+        initialPosition = new Position(1, 1);
         initialColor = GameColors.GREEN;
-        goalLength = 10; 
+        goalLength = 10;
         caterpillar = new Caterpillar(initialPosition, initialColor, goalLength);
-    } 
+    }
 }
