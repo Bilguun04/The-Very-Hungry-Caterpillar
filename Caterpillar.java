@@ -201,7 +201,7 @@ public class Caterpillar extends MySinglyLinkedList<Segment> {
 	private void reverse() {
 		SNode current = this.head;
 		SNode prev = null;
-		while (current != null){
+		while (current != null) {
 			SNode nextnode = current.next;
 			current.next = prev;
 			prev = current;
@@ -215,10 +215,9 @@ public class Caterpillar extends MySinglyLinkedList<Segment> {
 		/*
 		 * ADD CODE HERE
 		 */
-		if (this.length == 1){
+		if (this.length == 1) {
 			return;
-		}
-		else if (this.length == 2){
+		} else if (this.length == 2) {
 			this.removeLast();
 			return;
 		}
@@ -232,7 +231,7 @@ public class Caterpillar extends MySinglyLinkedList<Segment> {
 			keep = !keep;
 		}
 		MySinglyLinkedList<Segment> remaining = new MySinglyLinkedList<>();
-		for (int item = 0; item <= (this.length+1)/2; item++){
+		for (int item = 0; item <= (this.length + 1) / 2; item++) {
 			Color curColor = colors.peekFirst();
 			Position curPosition = this.head.element.getPosition();
 			remaining.addLast(new Segment(curPosition, curColor));
@@ -240,7 +239,7 @@ public class Caterpillar extends MySinglyLinkedList<Segment> {
 			colors.removeFirst();
 		}
 		this.clear();
-		for (Segment segment : remaining){
+		for (Segment segment : remaining) {
 			this.addLast(segment);
 		}
 	}
@@ -250,41 +249,54 @@ public class Caterpillar extends MySinglyLinkedList<Segment> {
 		/*
 		 * ADD CODE HERE
 		 */
-		int energy = cake.getEnergyProvided();
-
-		int segmentsToAdd = Math.min(energy, positionsPreviouslyOccupied.getSize());
-
-		Color[] segmentColors = GameColors.SEGMENT_COLORS;
-
-		for (int i = 0; i < segmentsToAdd; i++) {
-			Color randomColor = segmentColors[randNumGenerator.nextInt(segmentColors.length)];
-			if (this.checkinCaterpillar(positionsPreviouslyOccupied.peek())){
-				turnsNeededToDigest = energy - segmentsToAdd;
-				return;
+		if (stage == EvolutionStage.FEEDING_STAGE) {
+			stage = EvolutionStage.GROWING_STAGE;
+			int energyProvided = cake.getEnergyProvided();
+			int segmentsToGrow = Math.min(energyProvided, positionsPreviouslyOccupied.getSize());
+			int segmentAdded = 0;
+			for (int i = 0; i < segmentsToGrow; i++) {
+				if (getSize() == goal) {
+					stage = EvolutionStage.BUTTERFLY;
+					return;
+				}
+				int randomNum = randNumGenerator.nextInt(GameColors.SEGMENT_COLORS.length);
+				Color randomColor = GameColors.SEGMENT_COLORS[randomNum];
+				Position positiontoAdd = positionsPreviouslyOccupied.pop();
+				if (!isOccupied(positiontoAdd)) {
+					Segment segmenttoAdd = new Segment(positiontoAdd, randomColor);
+					this.addLast(segmenttoAdd);
+					segmentAdded++;
+				} else {
+					break;
+				}
 			}
-			this.addLast(new Segment(positionsPreviouslyOccupied.pop(), randomColor));
-			if (this.getSize() == goal){
+			if (this.getSize() == goal) {
 				stage = EvolutionStage.BUTTERFLY;
 				return;
 			}
-		}
-
-		if (segmentsToAdd == energy) {
-			if (EvolutionStage.BUTTERFLY != this.stage) {
-				this.stage = EvolutionStage.FEEDING_STAGE;
+			int leftOverEnergy = energyProvided - segmentAdded;
+			this.turnsNeededToDigest = leftOverEnergy;
+			if (leftOverEnergy == 0) {
+				stage = EvolutionStage.FEEDING_STAGE;
 			}
+		} else {
+			throw new IllegalArgumentException();
 		}
-		turnsNeededToDigest = energy - segmentsToAdd;
 	}
 
-	private boolean checkinCaterpillar(Position position){
-		for (Segment segment : this){
-			if (position.equals(segment.getPosition())){
+	private boolean isOccupied(Position position) {
+		SNode tempNode = head;
+		int i = 0;
+		while (tempNode != null && i < getSize()) {
+			if (tempNode.element.getPosition().equals(position)) {
 				return true;
 			}
+			tempNode = tempNode.next;
+			i++;
 		}
 		return false;
 	}
+
 
 	public String toString() {
 
